@@ -6,68 +6,197 @@ import pandas as pd
 st.title("Python Fundamentals and Execution")
 st.write("This Streamlit app summarizes key concepts from the first class on Python.")
 
-# Section 1: Python Introduction
-st.header("1️⃣ Introduction to Python")
+# Section 1: Introduction to Python
+st.header("1️⃣ Introduction to Python 🐍")
 st.write(
-    "Python was created by **Guido van Rossum** in the late 1980s and officially released in 1991. "
-    "It is dynamically typed, meaning you don't need to specify variable types like `int`, `float`, or `str` explicitly."
+    "Python was created by **Guido van Rossum**, a Dutch programmer, in the late 1980s. "
+     "He officially released **Python 0.9.0 in 1991**, featuring simple syntax similar to English. "
+    "Python is dynamically typed, so you don't need to declare types explicitly, but you can use type hints 🎯"
 )
 
-# Section 2: Print Function
-st.header("2️⃣ Python Print Function")
-st.write("Unlike `Print`, `print` (lowercase) is the correct built-in function to display output.")
+st.markdown("### Printing Output in Python 🖨️")
+st.write(
+    "In Python, the **`print()`** function is used to display output on the screen. "
+    "It is a built-in function and one of the first commands beginners learn. "
+    "Remember, using `Print` (uppercase) will cause a **NameError**, while `print` (lowercase) works correctly. ✅"
+)
+
+st.markdown("### Example:")
 st.code("print('Hello, World!')", language="python")
 
-# Section 3: Python Execution Process
-st.header("3️⃣ Python Execution Process")
-st.write("When you run a Python script, it follows this process:")
-st.markdown("""
-1. **Source Code (.py file)** → Written by the user.
-2. **Bytecode (.pyc file or in-memory)** → Python compiles the .py file into bytecode.
-3. **Python Virtual Machine (PVM)** → Executes the bytecode line by line.
+
+# Section 2: Python Execution Process & Bytecode Analysis 🔄🔍
+st.header("2️⃣ Python Execution Process & Bytecode Analysis 🔄🔍")
+st.write("When you run a Python script, it goes through the following steps:")
+st.markdown(
+    """
+1️⃣ **Source Code (`.py` file)** – Human-readable Python code.  
+2️⃣ **Bytecode (`.pyc` file or in-memory bytecode)** – Python compiles the code into bytecode.  
+3️⃣ **Python Virtual Machine (PVM)** – Executes bytecode line by line.  
+"""
+)
+st.markdown("💡 Python abstracts machine-level execution, unlike compiled languages like C++.")
+
+st.write(
+    "**What happens under the hood?** Python first compiles your code into bytecode before execution. "
+    "This bytecode is stored in `.pyc` files (inside `__pycache__`) or kept in memory."
+)
+
+st.markdown("### Example Bytecode Analysis:")
+st.code(
+    """
+import dis
+
+def greet():
+    print("Hello, World!")
+
+dis.dis(greet)
+""",
+    language="python",
+)
+
+st.markdown("### Output (Bytecode Instructions):")
+st.code(
+    """
+  2           0 LOAD_GLOBAL              0 (print)
+              2 LOAD_CONST               1 ('Hello, World!')
+              4 CALL_FUNCTION            1
+              6 RETURN_VALUE
+""",
+    language="text",
+)
+
+st.write(
+    "This is Python’s low-level **bytecode**, interpreted by the **Python Virtual Machine (PVM).** 🖥️ "
+    "Understanding bytecode helps in performance tuning, debugging, and security. 🔍"
+)
+
+# Section 3: Python’s Dynamic Typing & PVM 🖥️
+st.header("3️⃣ Python’s Dynamic Typing & PVM 🖥️")
+st.write(
+    "**Python is dynamically typed, meaning you don't need to specify variable types explicitly.** "
+    "The interpreter determines types at runtime."
+)
+st.markdown("### Example:")
+st.code(
+    """
+x = 5      # Integer
+x = "Hello"  # String (Python allows changing types)
+""",
+    language="python",
+)
+st.markdown("💡 Unlike statically typed languages like C++, Python allows type flexibility.")
+
+st.write(
+    "Python's **PVM** executes bytecode instructions **one by one**, converting them into machine code dynamically."
+)
+st.markdown("### Why is this important?")
+st.markdown(
+    """
+✅ **Makes Python cross-platform** – Bytecode is platform-independent.  
+✅ **Handles memory management** – Uses garbage collection for optimization.  
+✅ **Supports interactive execution** – Great for prototyping and scripting.  
+"""
+)
+
+# Section 4: Reverse Engineering `.pyc` Files 🔍
+st.header("4️⃣ Reverse Engineering `.pyc` Files 🔍")
+st.write(
+    "Python `.pyc` files contain compiled bytecode. **Can they be decompiled?** 🧐"
+)
+st.markdown("✅ Yes, but with some limitations:")
+st.markdown(
+    """
+- **Obfuscation** – Some developers use tools like PyArmor to protect code.  
+- **Cython or PyInstaller** – These make decompilation harder.  
+- **Stripped Debug Symbols** – Removes variable names, making reverse engineering difficult.  
+"""
+)
+st.markdown("### Example: Decompiling `.pyc` with `uncompyle6` (⚠️ Ethical Use Only!)")
+st.code("uncompyle6 -o output_dir my_script.pyc", language="bash")
+
+st.markdown("🔴 **Warning:** Reverse engineering should only be done for ethical and legal purposes!")
+
+# Section 6: GPU vs TPU Comparison
+# Explanation of GPU
+st.subheader("🖥️ What is a GPU?")
+st.write("""
+A **GPU (Graphics Processing Unit)** is a powerful chip designed for **parallel computing**. Originally made for gaming, it's now widely used in:
+- AI & Deep Learning
+- 3D Rendering & Video Editing
+- Scientific Simulations
 """)
 
-# Section 4: Bytecode Analysis
-st.header("4️⃣ Bytecode Analysis")
-st.write("Python code is first compiled into bytecode before execution. Let's analyze a simple function:")
+st.markdown("**Popular GPUs:**")
+st.code('''NVIDIA: RTX 3090, A100, H100
+AMD: Radeon RX 7900 XTX
+Apple: M1/M2 GPU''', language="plaintext")
 
-def sample_function():
-    print("Hello, Bytecode!")
+# Explanation of TPU
+st.subheader("⚡ What is a TPU?")
+st.write("""
+A **TPU (Tensor Processing Unit)** is a specialized AI chip created by **Google**. It’s optimized for **TensorFlow** and performs matrix operations **faster and more efficiently** than a GPU.
+""")
 
-bytecode = dis.Bytecode(sample_function)
-st.code("\n".join([str(instr) for instr in bytecode]), language="python")
+st.markdown("**Where Are TPUs Used?**")
+st.markdown("""
+- **Google Cloud AI**
+- **AI-powered search results**
+- **Google Translate, Photos, and Assistant**
+- **TensorFlow models**
+""")
 
-# Section 5: Python Use Cases
-st.header("5️⃣ Python Use Cases")
-st.write("Python is used in various domains. Here's a table summarizing its applications:")
+# GPU vs TPU Comparison
+st.header("🔍 GPU vs TPU Comparison")
+st.write("Comparison of GPUs and TPUs in different applications:")
 
-data = {
-    "Category": ["Web Development", "Data Science & ML", "Automation", "Cybersecurity", "Game Development"],
-    "Example Libraries": ["Django, Flask", "Pandas, TensorFlow", "Selenium, PyAutoGUI", "Scapy, Paramiko", "Pygame, Panda3D"],
-    "Use Cases": [
-        "Websites, Web Apps",
-        "AI, Data Analytics",
-        "Auto-Email, File Management",
-        "Ethical Hacking, Pen Testing",
-        "2D/3D Games"
+# Data for GPU vs TPU comparison
+data_gpu_tpu = {
+    "Task": [
+        "Gaming", 
+        "Video Editing & 3D Design", 
+        "AI Model Training (PyTorch)", 
+        "AI Model Training (TensorFlow)", 
+        "AI Inference (Production)", 
+        "Cloud AI Computing"
+    ],
+    "Use GPU?": [
+        "✅ Yes", 
+        "✅ Yes", 
+        "✅ Yes", 
+        "✅ Yes", 
+        "✅ Yes", 
+        "❌ No"
+    ],
+    "Use TPU?": [
+        "❌ No", 
+        "❌ No", 
+        "❌ No", 
+        "✅ Yes (Faster)", 
+        "✅ Yes (Faster)", 
+        "✅ Yes (Google Cloud TPUs)"
     ]
 }
 
-df = pd.DataFrame(data)
-st.dataframe(df)
-
-# Section 6: GPU vs TPU Comparison
-st.header("6️⃣ GPU vs TPU Comparison")
-st.write("Comparison of GPUs and TPUs in different applications:")
-
-data_gpu_tpu = {
-    "Task": ["Gaming", "Video Editing", "AI Model Training (PyTorch)", "AI Model Training (TensorFlow)", "AI Inference (Production)"],
-    "Use GPU?": ["✅ Yes", "✅ Yes", "✅ Yes", "✅ Yes", "✅ Yes"],
-    "Use TPU?": ["❌ No", "❌ No", "❌ No", "✅ Yes (Faster)", "✅ Yes (Faster)"]
-}
-
+# Create and display DataFrame
 df_gpu_tpu = pd.DataFrame(data_gpu_tpu)
 st.dataframe(df_gpu_tpu)
+
+# When to Use GPU or TPU
+st.subheader("🤔 Which One Should You Use?")
+
+st.success("✅ **Choose a GPU if:**")
+st.markdown("""
+- You're using **PyTorch, OpenAI models, or gaming**.
+- You need **CUDA acceleration** for machine learning/deep learning.
+""")
+
+st.info("✅ **Choose a TPU if:**")
+st.markdown("""
+- You're using **TensorFlow models on Google Cloud**.
+- You need **fast AI inference at low power cost**.
+""")
+
 
 # Section 7: Python Built-in Data Types
 st.header("📌 Python Built-in Data Types")

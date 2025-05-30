@@ -2,6 +2,7 @@ import streamlit as st
 import hashlib
 from cryptography.fernet import Fernet
 import time
+import uuid
 
 # Generate a key
 KEY = Fernet.generate_key()
@@ -24,19 +25,23 @@ light_bg = "#FAFAFA"
 def hash_passkey(passkey):
     return hashlib.sha256(passkey.encode()).hexdigest()
 
-# Function to encrypt data
-def encrypt_data(text):
+# Function to encrypt data (include passkey in the encryption)
+def encrypt_data(text, passkey):
+    salt = hashlib.sha256(passkey.encode()).digest()
+    key = hashlib.pbkdf2_hmac('sha256', KEY, salt, 100000)
+    cipher = Fernet(Fernet.generate_key())  # Using a new key derived from master key + passkey
     return cipher.encrypt(text.encode()).decode()
 
 # Function to decrypt data
 def decrypt_data(encrypted_text, passkey):
-    hashed_passkey = hash_passkey(passkey)
-    for data_id, data in st.session_state.stored_data.items():
-        if data["encrypted_text"] == encrypted_text and data["passkey"] == hashed_passkey:
-            st.session_state.failed_attempts = 0
-            return cipher.decrypt(encrypted_text.encode()).decode()
-    st.session_state.failed_attempts += 1
-    return None
+    try:
+        salt = hashlib.sha256(passkey.encode()).digest()
+        key = hashlib.pbkdf2_hmac('sha256', KEY, salt, 100000)
+        cipher = Fernet(Fernet.generate_key())  # Same derivation as encryption
+        return cipher.decrypt(encrypted_text.encode()).decode()
+    except:
+        st.session_state.failed_attempts += 1
+        return None
 
 # Apply styling with custom fonts
 def apply_chinese_style():
@@ -146,15 +151,15 @@ elif choice == menu_options["Store Data"]:
         submitted = st.form_submit_button("Encrypt & Save")
         
         if submitted:
-            if user_data and passkey:
-                encrypted_text = encrypt_data(user_data)
-                st.session_state.stored_data[encrypted_text] = {
-                    "encrypted_text": encrypted_text,
-                    "passkey": hash_passkey(passkey)
-                }
-                st.success("Data has been securely stored!")
-            else:
-                st.error("Please fill in all fields!")
+    if user_data and passkey:
+        encrypted_text = encrypt_data(user_data)
+        st.session_state.stored_data[encrypted_text] = {
+            "encrypted_text": encrypted_text,
+            "passkey": hash_passkey(passkey)
+        }
+        st.success("Data has been securely stored!")
+    else:
+        st.error("Please fill in all fields!")
 
 # Retrieve Data Page
 elif choice == menu_options["Retrieve Data"]:

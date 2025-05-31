@@ -151,15 +151,15 @@ elif choice == menu_options["Store Data"]:
         submitted = st.form_submit_button("Encrypt & Save")
         
         if submitted:
-    if user_data and passkey:
-        encrypted_text = encrypt_data(user_data)
-        st.session_state.stored_data[encrypted_text] = {
-            "encrypted_text": encrypted_text,
-            "passkey": hash_passkey(passkey)
-        }
-        st.success("Data has been securely stored!")
-    else:
-        st.error("Please fill in all fields!")
+            if user_data and passkey:
+                encrypted_text = encrypt_data(user_data)
+                st.session_state.stored_data[encrypted_text] = {
+                    "encrypted_text": encrypted_text,
+                    "passkey": hash_passkey(passkey)
+                }
+                st.success("Data has been securely stored!")
+            else:
+                st.error("Please fill in all fields!")
 
 # Retrieve Data Page
 elif choice == menu_options["Retrieve Data"]:

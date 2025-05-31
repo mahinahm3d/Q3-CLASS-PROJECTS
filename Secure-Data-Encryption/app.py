@@ -197,6 +197,7 @@ elif choice == menu_options["Retrieve Data"]:
             else:
                 st.error("Please fill in all fields!")
 
+
 # Login Page
 elif choice == menu_options["Login"]:
     st.markdown(f"""
